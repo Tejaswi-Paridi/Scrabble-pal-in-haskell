@@ -1,0 +1,45 @@
+ 1 import System.Environment
+ 2 import Data.Map as M
+ 3 import Data.Maybe
+ 4 import System.IO
+ 5 import Data.List
+ 6 
+ 7 filename :: Int -> String
+ 8 filename n = "len" ++ (show n) ++ "words.txt"
+ 9 
+ 10 getAnagrams :: [String] -> String -> [String]
+ 11 getAnagrams word w = [x | x <- word, sort x == sort w]
+ 12 
+ 13 letterScore :: Char -> Int
+ 14 letterScore ch = fromJust $ M.lookup ch $ M.fromList [('a',1), ('b',3), ('c', 3), ('e', 1),    ('d    ', 2), ('g', 2), ('f', 4), ('i', 1), ('h', 4), ('k', 5), ('j', 8), ('m', 3), ('l', 1), ('o', 1)    , ('n', 1), ('q', 10), ('p', 3), ('s', 1), ('r', 1), ('u', 1), ('t', 1), ('w', 4), ('v' , 4), (    'y', 4), ('x', 8), ('z', 10)]
+ 15 
+ 16 wordScore :: String -> Int
+ 17 wordScore wor = sum[letterScore ch | ch <- wor]
+ 18 
+ 19 listWordScore ::[String] -> [Int]
+ 20 listWordScore list = [wordScore wor | wor <- list]
+ 21 
+ 22 constraints :: Int-> Char -> [String] -> [String]
+ 23 constraints  num letter list = [x | x <- list , x !! (num - 1) == letter]
+ 24 
+ 25 main = do
+ 26     args <- getArgs
+ 27     let string = args !! 0
+ 28     let character = args !! 1
+ 29     let ch = character !! 0
+ 30     let position = args !! 2
+ 31     let len = length string
+ 32     handle <- openFile (filename len) ReadMode
+ 33     contents <- hGetContents handle
+ 34     let finalList = getAnagrams (words contents) string
+ 35     let allwords = finalList
+ 36     let allwordsScore = listWordScore finalList
+ 37     let result2 = zip allwords allwordsScore
+ 38     let constraintList = constraints (read position:: Int) ch  finalList
+ 39     let constraintListScore = listWordScore $ constraints (read position:: Int) ch   finalList
+ 40     print result2
+ 41     let result = zip constraintList constraintListScore
+ 42     print result
+ 43     hClose handle
+
+
