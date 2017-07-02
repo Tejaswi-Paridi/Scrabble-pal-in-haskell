@@ -1,0 +1,1 @@
+# Scrabble-pal-in-haskell
